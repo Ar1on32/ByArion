@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Arion</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Sixtyfour+Convergence&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Sixtyfour Convergence', serif;
+      cursor: none;
+    }
+
+    #video-background {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      z-index: -100;
+    }
+
+    .content {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      text-align: center;
+    }
+
+    .logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .logo {
+      margin: 10px;
+    }
+
+    .logo img {
+      width: 100px;
+      height: 100px;
+    }
+
+    .social-icons {
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      opacity: 1;
+      transition: opacity 0.5s;
+      display: flex;
+      gap: 20px;
+    }
+
+    .social-icon-wrapper {
+      position: relative;
+    }
+
+    .social-icons img {
+      width: 50px;
+      margin: 0;
+      transition: transform 0.3s;
+    }
+
+    .glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 70px;
+      height: 70px;
+      background: rgba(255, 0, 0, 0.6);
+      border-radius: 50%;
+      filter: blur(20px);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .social-icon-wrapper:hover .glow {
+      opacity: 1;
+    }
+
+    .social-icons img:hover {
+      transform: scale(1.1);
+    }
+
+    .social-icons a:hover img {
+      filter: brightness(0.5) sepia(1) hue-rotate(320deg) saturate(1000%);
+    }
+
+    #blur-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      backdrop-filter: blur(3px);
+      z-index: -50;
+    }
+
+    #blur-range {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 200px;
+      z-index: 100;
+      -webkit-appearance: none;
+      background: transparent;
+      outline: none;
+    }
+
+    #blur-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: #8d0801;
+      cursor: pointer;
+      border-radius: 50%;
+    }
+
+    #blur-range::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: #8d0801;
+      cursor: pointer;
+      border-radius: 50%;
+    }
+
+    #blur-range::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 20px;
+      background: rgba(22, 26, 29, 0.5);
+      border-radius: 10px;
+    }
+
+    #blur-range::-moz-range-track {
+      width: 100%;
+      height: 20px;
+      background: rgba(22, 26, 29, 0.5);
+      border-radius: 10px;
+    }
+
+    #current-time {
+      font-size: 24px;
+      font-weight: bold;
+      user-select: none;
+    }
+
+    h1 {
+      user-select: none;
+    }
+
+    .neon-cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 10;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .neon-cursor::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-color: #ff0000;
+      box-shadow: 0 0 10px #ff0000,
+        0 0 20px #ff0000,
+        0 0 30px #ff0000;
+      animation: neon-glow 2s linear infinite;
+      animation: neon-color-change 2s linear infinite;
+    }
+
+    .neon-cursor:hover {
+      transform: scale(1.2);
+    }
+
+    .audio-control {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 40px;
+      height: 40px;
+      background-image: url('img/sound-on.png');
+      background-size: cover;
+      cursor: pointer;
+      z-index: 100;
+    }
+
+    .audio-control.muted {
+      background-image: url('img/sound-off.png');
+    }
+
+    @keyframes neon-glow {
+      0% { box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000; }
+      50% { box-shadow: 0 0 10px #000000, 0 0 20px #000000, 0 0 30px #000000; }
+      100% { box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000; }
+    }
+
+    @keyframes neon-color-change {
+      0% { background-color: #ff0000; }
+      50% { background-color: #000000; }
+      100% { background-color: #ff0000; }
+    }
+
+    @media screen and (max-width: 768px) {
+      .content {
+        top: 30%;
+      }
+
+      .social-icons {
+        top: 70%;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .social-icons img {
+        width: 40px;
+      }
+
+      .glow {
+        width: 60px;
+        height: 60px;
+      }
+
+      #blur-range {
+        width: 150px;
+      }
+
+      #current-time {
+        font-size: 18px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .content {
+        top: 40%;
+      }
+
+      .social-icons {
+        top: 80%;
+      }
+
+      .social-icons img {
+        width: 30px;
+      }
+
+      .glow {
+        width: 50px;
+        height: 50px;
+      }
+
+      #blur-range {
+        width: 100px;
+      }
+
+      #current-time {
+        font-size: 14px;
+      }
+
+      .audio-control {
+        width: 30px;
+        height: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="blur-overlay"></div>
+  <input type="range" id="blur-range" min="0" max="20" value="3">
+  <video id="video-background" autoplay loop muted>
+    <source src="img/back2.mp4" type="video/mp4">
+  </video>
+  <audio src="img/zapret.mp3" id="background-audio" autoplay loop></audio>
+  <div class="content">
+    <h1>`By Arion`</h1>
+    <p id="current-time"></p>
+  </div>
+  <div class="logos">
+    <div class="social-icons">
+      <div class="social-icon-wrapper">
+        <a href="https://discord.gg/GdMEv3wK" target="_blank"><img src="img/discord.png" alt="Discord"></a>
+        <div class="glow"></div>
+      </div>
+      <div class="social-icon-wrapper">
+        <a href="https://github.com/Ar1on32" target="_blank"><img src="img/github.png" alt="Github"></a>
+        <div class="glow"></div>
+      </div>
+      <div class="social-icon-wrapper">
+        <a href="https://steamcommunity.com/profiles/76561198346599993/" target="_blank"><img src="img/steam.png" alt="Steam"></a>
+        <div class="glow"></div>
+      </div>
+      <div class="social-icon-wrapper">
+        <a href="https://t.me/Arion_123" target="_blank"><img src="img/telegram.png" alt="Telegram"></a>
+        <div class="glow"></div>
+      </div>
+    </div>
+  </div>
+  <div class="neon-cursor"></div>
+  <div class="audio-control"></div>
+
+  <script>
+    const blurOverlay = document.getElementById('blur-overlay');
+    const blurRange = document.getElementById('blur-range');
+    const currentTimeElement = document.getElementById('current-time');
+    const cursorEffect = document.querySelector('.neon-cursor');
+    const audioControl = document.querySelector('.audio-control');
+    const backgroundAudio = document.getElementById('background-audio');
+    backgroundAudio.volume = 0.3; // Установка громкости на 50%
+    let isAudioMuted = false;
+
+    function updateTime() {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const seconds = now.getSeconds().toString().padStart(2, '0');
+      currentTimeElement.textContent = `${hours}:${minutes}:${seconds}`;
+    }
+
+    updateTime();
+
+    setInterval(updateTime, 1000);
+
+    blurRange.addEventListener('input', () => {
+      const blurValue = blurRange.value + 'px';
+      blurOverlay.style.backdropFilter = `blur(${blurValue})`;
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      cursorEffect.style.left = e.clientX - 5 + 'px';
+      cursorEffect.style.top = e.clientY - 5 + 'px';
+    });
+
+    audioControl.addEventListener('click', () => {
+      isAudioMuted = !isAudioMuted;
+      if (isAudioMuted) {
+        audioControl.classList.add('muted');
+        backgroundAudio.pause();
+      } else {
+        audioControl.classList.remove('muted');
+        backgroundAudio.play();
+      }
+    });
+  </script>
+</body>
+</html>
