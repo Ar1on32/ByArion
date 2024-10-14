@@ -193,6 +193,18 @@
       transform: scale(1.2);
     }
 
+    @keyframes neon-glow {
+      0% { box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000; }
+      50% { box-shadow: 0 0 10px #000000, 0 0 20px #000000, 0 0 30px #000000; }
+      100% { box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000; }
+    }
+
+    @keyframes neon-color-change {
+      0% { background-color: #ff0000; }
+      50% { background-color: #000000; }
+      100% { background-color: #ff0000; }
+    }
+
     .audio-control {
       position: fixed;
       bottom: 20px;
@@ -207,18 +219,6 @@
 
     .audio-control.muted {
       background-image: url('img/sound-off.png');
-    }
-
-    @keyframes neon-glow {
-      0% { box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000; }
-      50% { box-shadow: 0 0 10px #000000, 0 0 20px #000000, 0 0 30px #000000; }
-      100% { box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000; }
-    }
-
-    @keyframes neon-color-change {
-      0% { background-color: #ff0000; }
-      50% { background-color: #000000; }
-      100% { background-color: #ff0000; }
     }
 
     @media screen and (max-width: 768px) {
@@ -247,6 +247,12 @@
 
       #current-time {
         font-size: 18px;
+      }
+
+      .audio-control {
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
       }
     }
 
@@ -279,6 +285,7 @@
       .audio-control {
         width: 30px;
         height: 30px;
+        bottom: 60px;
       }
     }
   </style>
@@ -291,7 +298,7 @@
   </video>
   <audio src="img/zapret.mp3" id="background-audio" autoplay loop></audio>
   <div class="content">
-    <h1>`By Arion`</h1>
+    <h1>By Arion</h1>
     <p id="current-time"></p>
   </div>
   <div class="logos">
@@ -324,7 +331,7 @@
     const cursorEffect = document.querySelector('.neon-cursor');
     const audioControl = document.querySelector('.audio-control');
     const backgroundAudio = document.getElementById('background-audio');
-    backgroundAudio.volume = 0.3; // Установка громкости на 50%
+    backgroundAudio.volume = 0.3; // Установка громкости на 30%
     let isAudioMuted = false;
 
     function updateTime() {
