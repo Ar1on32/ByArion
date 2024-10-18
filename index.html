@@ -192,17 +192,6 @@
     .neon-cursor:hover {
       transform: scale(1.2);
     }
-    @keyframes neon-glow {
-      0% { box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000; }
-      50% { box-shadow: 0 0 10px #000000, 0 0 20px #000000, 0 0 30px #000000; }
-      100% { box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000; }
-    }
-
-    @keyframes neon-color-change {
-      0% { background-color: #ff0000; }
-      50% { background-color: #000000; }
-      100% { background-color: #ff0000; }
-    }
 
     .audio-control {
       position: fixed;
@@ -218,6 +207,18 @@
 
     .audio-control.muted {
       background-image: url('img/sound-off.png');
+    }
+
+    @keyframes neon-glow {
+      0% { box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000; }
+      50% { box-shadow: 0 0 10px #000000, 0 0 20px #000000, 0 0 30px #000000; }
+      100% { box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000; }
+    }
+
+    @keyframes neon-color-change {
+      0% { background-color: #ff0000; }
+      50% { background-color: #000000; }
+      100% { background-color: #ff0000; }
     }
 
     @media screen and (max-width: 768px) {
@@ -246,12 +247,6 @@
 
       #current-time {
         font-size: 18px;
-      }
-
-      .audio-control {
-        bottom: 80px;
-        left: 50%;
-        transform: translateX(-50%);
       }
     }
 
@@ -284,7 +279,6 @@
       .audio-control {
         width: 30px;
         height: 30px;
-        bottom: 60px;
       }
     }
   </style>
@@ -323,14 +317,13 @@
   <div class="neon-cursor"></div>
   <div class="audio-control"></div>
 
-  <script>
+ <script>
     const blurOverlay = document.getElementById('blur-overlay');
     const blurRange = document.getElementById('blur-range');
     const currentTimeElement = document.getElementById('current-time');
     const cursorEffect = document.querySelector('.neon-cursor');
     const audioControl = document.querySelector('.audio-control');
     const backgroundAudio = document.getElementById('background-audio');
-    backgroundAudio.volume = 0.3; // Установка громкости на 30%
     let isAudioMuted = false;
 
     function updateTime() {
@@ -338,15 +331,16 @@
       const hours = now.getHours().toString().padStart(2, '0');
       const minutes = now.getMinutes().toString().padStart(2, '0');
       const seconds = now.getSeconds().toString().padStart(2, '0');
-      currentTimeElement.textContent = ${hours}:${minutes}:${seconds};
+      currentTimeElement.textContent = `${hours}:${minutes}:${seconds}`;
     }
 
     updateTime();
 
     setInterval(updateTime, 1000);
-blurRange.addEventListener('input', () => {
+
+    blurRange.addEventListener('input', () => {
       const blurValue = blurRange.value + 'px';
-      blurOverlay.style.backdropFilter = blur(${blurValue});
+      blurOverlay.style.backdropFilter = `blur(${blurValue})`;
     });
 
     document.addEventListener('mousemove', (e) => {
